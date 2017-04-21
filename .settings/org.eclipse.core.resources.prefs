@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//commonapp/models.py=utf-8
+encoding//commonapp/views.py=utf-8
+encoding//studentapp/views.py=utf-8
+encoding//teacherapp/models.py=utf-8
+encoding//teacherapp/views.py=utf-8

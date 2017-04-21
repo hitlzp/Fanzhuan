@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>翻转课堂（教师）</title>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="/static/css/daohang.css" rel="stylesheet"  type="text/css">
+	<link href="/static/css/templatemo_style.css" rel="stylesheet" type="text/css">	
+	<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="all" />
+	<script src="/static/js/jquery.min.js"></script> 
+	<script type="text/javascript" src="/static/js/jedate.js"></script>
+	<!-- for-mobile-apps -->
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<!-- //for-mobile-apps -->
+		<script>
+		function WhichButton(event)
+		{
+			<!--alert(event)-->
+			var post_data ={
+			"name":event,
+			};
+			
+			$.ajax({
+			  type : "POST", //要插入数据，所以是POST协议 
+			  url : "/test3/", //注意结尾的斜线，否则会出现500错误
+			  data : post_data, //JSON数据
+			  // data:"name=" + event,
+			  success: function(mydata){
+				//$('#result').html(mydata["cname"]);
+				//document.write("sadsa")
+				for (var i=0;i<mydata["pp"][0];i++)
+				{
+				    var j = i+1;
+					var t2g = document.getElementById("t2g"+String(j));
+					t2g.value = mydata["pp"][j][0];
+					var t2s = document.getElementById("t2s"+String(j));
+					t2s.value = mydata["pp"][j][1];
+					var g2g = document.getElementById("g2g"+String(j));
+					g2g.value = mydata["pp"][j][2];
+					var gig = document.getElementById("gig"+String(j));
+					gig.value = mydata["pp"][j][3];
+					var self = document.getElementById("self"+String(j));
+					self.value = mydata["pp"][j][4];
+				}				
+			  },
+			  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
+			  // contentType : 'application/json',
+			});
+			
+		}
+	</script>
+ </head>
+  
+  <body style="background: #dfdfdf;"> 
+	<div id = "a">
+		<ul>
+			<li><a href="/teacher/main/">|返回首页</a></li>
+			<li><a href="/logout/">|注销</a></li>
+			<li><a href="/teacher/addcourse/">|我要开课</a></li>
+			<li><a href="/teacher/coursemanage/">|查看课程</a></li>
+			<li><a href="/teacher/addcourse/addsegment/">上一页</a></li>
+		</ul>
+	</div>
+	<div class="container center-block templatemo-form-list-container-left templatemo-container-left float-lt">
+		<h2 style="text-align: center;"><span class="green">模板</span></h2>
+		<div class="col-md-12">		
+		{% for model in themodels %}		
+		<table class="table table-striped table-hover">			
+	      <tbody>
+		    <tr> <td class="text-center"><button type="button" style="width: 240px;" onclick = "WhichButton({{model.id}});"><a style="width: 220px;" class="btn btn-info"><<{{model.cname}}>></a></button></td></tr>
+	      </tbody>
+	    </table>
+		{% endfor %}
+		</div>
+	</div>
+	<div class="main">
+		<div class="agileinfo_main_grid">
+			<form action="#" method="post" id="uld">
+				{% for i, value in seg_dict.items %}
+				<table style="width:100%"><tr>
+				<h1>环节{{i}}:&nbsp共占{{value}}%</h1>
+				</table>
+					<font color="#FFFFFF">本环节评分分值比例分配</font><br /><br /> 
+					<font color="#FFFFFF">教师对小组评价&nbsp&nbsp&nbsp</font>
+					<input id = "t2g{{i}}" type="number" name="t2g{{i}}" value= "0" min="0" max="{{value}}">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<font color="#FFFFFF">教师对每位同学评价&nbsp&nbsp&nbsp</font>
+					<input id = "t2s{{i}}" type="number" name="t2s{{i}}" value= "0" min="0" max="{{value}}"><br><br /><br /> 
+					<font color="#FFFFFF">组间互评 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+					<input id = "g2g{{i}}" type="number" name="g2g{{i}}" value= "0" min="0" max="{{value}}">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<font color="#FFFFFF">组内互评&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+					<input id = "gig{{i}}" type="number" name="gig{{i}}" value= "0" min="0" max="{{value}}">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<font color="#FFFFFF">自评&nbsp&nbsp&nbsp</font>
+					<input id = "self{{i}}" type="number" name="self{{i}}" value= "0" min="0" max="{{value}}"><br>
+					<br /><br /> 
+				{% endfor %}
+				<input type="submit" value="确认"> 
+			</form>
+		</div>
+	</div>
+ <!-- Modal -->
+	<div class="modal fade" id="templatemo_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">课程介绍</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p>test</p>
+	        <p>lzp</p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>

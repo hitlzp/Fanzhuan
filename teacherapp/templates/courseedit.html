@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html style="height:initial">
+  <head>
+    <title>翻转课堂（教师）</title>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="/static/css/daohang.css" rel="stylesheet"  type="text/css">
+	<link href="/static/css/templatemo_style.css" rel="stylesheet" type="text/css">	
+	<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="all" />
+	<script type="text/javascript" src="/static/js/jedate.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	<!-- for-mobile-apps -->
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<!-- //for-mobile-apps -->
+	<script>
+		function WhichButton(event)
+		{
+			<!--alert(event)-->
+			var post_data ={
+			"name":event,
+			};
+			
+			$.ajax({
+			  type : "POST", //要插入数据，所以是POST协议 
+			  url : "/teacher/course/mycourse/ajax/", //注意结尾的斜线，否则会出现500错误
+			  data : post_data, //JSON数据
+			  // data:"name=" + event,
+			  success: function(mydata){
+				var jscname = document.getElementById("jscname"); 
+				jscname.value = mydata["course"][0];
+				var jssum = document.getElementById("jssum"); 
+				jssum.value = mydata["course"][2];
+				var jsgroup = document.getElementById("jsgroup"); 
+				jsgroup.value = mydata["course"][3];
+				var dateinfo = document.getElementById("dateinfo"); 
+				dateinfo.value = mydata["course"][4];
+				var jsrecommend = document.getElementById("jsrecommend"); 
+				jsrecommend.value = mydata["course"][5];
+				var jssegment = document.getElementById("jssegment"); 
+				jssegment.value = mydata["course"][1];
+				
+				var radio = document.getElementsByName("type");
+				var radioLength = radio.length;
+				for(var j = 0;j < radioLength;j++)
+				{
+					if(radio[j].value == mydata["course"][6])
+					{
+						radio[j].checked = true;
+					}
+				}
+				//window.alert(mydata["segnum"])
+				for (var i=0;i<mydata["segnum"];i++)
+				{
+				    var k = i+1;
+					var jscname = document.getElementById("jssname"+String(k));
+					jscname.value = mydata["segment"][i][0];
+					var jstime = document.getElementById("jstime"+String(k));
+					jstime.value = mydata["segment"][i][1];
+					var jscontent = document.getElementById("jscontent"+String(k));
+					jscontent.value = mydata["segment"][i][2];
+					var jsratio = document.getElementById("jsratio"+String(k));
+					jsratio.value = mydata["segment"][i][3];
+				}				
+				for (var w=0;w<mydata["segnum"];w++)
+				{
+				    var j = w+1;
+					var t2g = document.getElementById("t2g"+String(j));
+					t2g.value = mydata["table"][w][0];
+					var t2s = document.getElementById("t2s"+String(j));
+					t2s.value = mydata["table"][w][1];
+					var g2g = document.getElementById("g2g"+String(j));
+					g2g.value = mydata["table"][w][2];
+					var gig = document.getElementById("gig"+String(j));
+					gig.value = mydata["table"][w][3];
+					var self = document.getElementById("self"+String(j));
+					self.value = mydata["table"][w][4];
+				}
+			  },
+			  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
+			  // contentType : 'application/json',
+			});
+			
+		}
+	</script>
+ </head>
+  
+  <body style="background: #dfdfdf;"> 
+	<div id = "a">
+		<ul>
+			<li><a href="/teacher/main/">|返回首页</a></li>
+			<li><a href="/logout/">|注销</a></li>
+			<li><a href="/teacher/addcourse/">|我要开课</a></li>
+			<li><a href="/teacher/coursemanage/">查看课程</a></li>
+		</ul>
+	</div>
+	<div class="main" style="padding:20px 0;">
+		<div class="agileinfo_main_grid">
+			<form action="#" method="post" id="uld">
+				<table style="width:100%"><tr>
+				<h1>课程信息</h1>
+				<td style="width:33.33%">
+				<div class="styled-input">
+					<font color="#FFFFFF">课程名称</font>
+					
+					<input id = "jscname" type="text" name="cname" value="" required=""> 
+					<span></span>
+				</div> </td>
+				<td style="width:33.33%">
+				<div class="styled-input">
+					<font color="#FFFFFF">环节数量</font>
+					<input id = "jssegment" type="text" name="seg" value="" disabled="true" min = 1 max = 7 required=""> 
+					<span></span>
+				</div> </td>
+
+				<td style="width:33.33%"><div class="styled-input">
+					<font color="#FFFFFF">人数</font>
+					<input id = "jssum" type="text" name="sum_s" value="" color: "#666" required="">
+					<span></span>
+				</div></td></tr></table>
+				<table style="width:100%"><tr><td>
+				<div class="styled-input">
+					<font color="#FFFFFF">小组人数</font>
+					<input id = "jsgroup" type="text" name="group" value="" required="">
+					<span></span>
+				</div></td>
+				<td><div class="styled-input">
+					<font color="#FFFFFF">开课时间</font>
+					<input name = "datetime" class="datainp" id="dateinfo" type="text" value="" required="">
+					<span></span>
+				</div></td></tr>
+				<tr><td colspan="3">
+				<div class="styled-input w3_styled_input_textarea">
+					<font color="#FFFFFF">课程介绍</font>
+					<textarea form="uld" id = "jsrecommend" name="introduce_c" value="" required=" "></textarea>
+					<span></span>
+				</div></td></tr>
+				</table>
+				<font color="#FFFFFF">评分风格</font><br /><br /> 
+				<label><input name="type" type="radio" value="0" /><font color="#FFFFFF">&nbsp百分制&nbsp&nbsp&nbsp</font></label> 
+				<label><input name="type" type="radio" value="1" /><font color="#FFFFFF">&nbsp十分制&nbsp&nbsp&nbsp</font></label> 
+				<br /><br /> <br /><br /> 
+
+				{% for i, value in seg_dict.items %}
+				<table style="width:100%"><tr>
+				<h1>环节{{i}}:&nbsp共占{{value}}%</h1>
+				<td style="width:33.33%">
+				<div class="styled-input">
+					<font color="#FFFFFF">环节名称</font>
+					<input id = "jssname{{i}}" type="text" name="sname{{i}}" value="" required=""> 
+					<span></span>
+				</div> </td>
+				<td style="width:33.33%"><div class="styled-input">
+					<font color="#FFFFFF">持续时间（分钟）</font>
+					<input id = "jstime{{i}}" type="text" name="minute{{i}}" value="" required="">
+					<span></span>
+				</div></td>
+				</tr></table>
+				<table style="width:100%"><tr>
+				<td><div class="styled-input">
+					<font color="#FFFFFF">本环节所占分值比例</font>
+					<input id = "jsratio{{i}}" type="text" name="ratio{{i}}" value="" required="">
+					<span></span>
+				</div></td>
+				</table>
+				
+				<table><tr><td>
+					<font color="#FFFFFF">本环节评分分值比例分配</font><br /><br /> 
+					<font color="#FFFFFF">教师对小组评价&nbsp&nbsp&nbsp</font>
+					<input id = "t2g{{i}}" type="number" name="t2g{{i}}" value= "0" style="width:120px;" min="0">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<font color="#FFFFFF">教师对每位同学评价&nbsp&nbsp&nbsp</font>
+					<input id = "t2s{{i}}" type="number" name="t2s{{i}}" value= "0" style="width:120px;" min="0"><br></br>
+					<font color="#FFFFFF">组间互评 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+					<input id = "g2g{{i}}" type="number" name="g2g{{i}}" value= "0" style="width:120px;" min="0">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<font color="#FFFFFF">组内互评&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+					<input id = "gig{{i}}" type="number" name="gig{{i}}" value= "0" style="width:120px;" min="0"><br><br />
+					<font color="#FFFFFF">自评&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+					<input id = "self{{i}}" type="number" name="self{{i}}" value= "0" style="width:120px;" min="0"><br>
+					<br /><br /> 
+				</table>
+				
+				<table style="width:100%"><tr><td>
+				<tr><td colspan="3">
+				<font color="#FFFFFF">环节介绍</font>
+				<div class="styled-input w3_styled_input_textarea">
+					<textarea id = "jscontent{{i}}" form="uld" name="introduce_c{{i}}" value="" required=" "></textarea>
+					<span></span>
+				</div></td></tr>
+				</table>
+				{% endfor %}
+				<div style="margin-left:auto;margin-right:2px;width:300px;"> 
+				<button type="button" onclick = "WhichButton({{cid}});"><a style="color:black;font-size:17px;">核对信息</a></button> 
+				<button type="submit" ><a style="color:black;font-size:17px;">修改信息</a></button> 
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+    jeDate({
+		dateCell:"#dateinfo",
+		format:"YYYY-MM-DD hh:mm:ss",
+		isinitVal:false,
+		isTime:true, //isClear:false,
+		minDate:"2014-09-19 00:00:00",
+		okfun:function(val){alert(val)}
+	})
+	</script>
+  </body>
+</html>

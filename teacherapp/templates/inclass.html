@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>翻转课堂</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link href="/static/css/style2.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/js/inclass.js"></script>
+<style> 
+.box{border:1px solid 
+#C0C0C0;width:1280px;height:50px;clip:rect(0px,181px,18px,0px);overflow:hidden;} 
+.box2{border:1px solid 
+#F4F4F4;width:1280px;height:50px;clip:rect(0px,179px,16px,0px);overflow:hidden;} 
+select{position:relative;left:-2px;top:-2px;font-size:42px;width:1280px;line-height:45px;bo 
+rder:0px;color:#909993;} 
+
+
+.Countdown{ padding-top: 30px; font-size:30px; font-family: tahoma,arial,simsun; color: #4A4A4A;}
+.Countdown span{ display:inline-block;*display:inline;*zoom:1; width:55px;line-height:55px;text-align:center; background-color:#fff; margin-left:2px;}
+.Countdown .bd{ width:16px; background-image:none;}
+:root .Countdown span{}
+
+
+<!--
+body,table{
+	font-size:12px;
+}
+table{
+	table-layout:fixed;
+	empty-cells:show; 
+	border-collapse: collapse;
+	margin:0 auto;
+}
+td{
+	height:20px;
+}
+h1,h2,h3{
+	font-size:12px;
+	margin:0;
+	padding:0;
+}
+
+.title { background: #FFF; border: 1px solid #9DB3C5; padding: 1px; width:100%;margin:20px auto; }
+	.title h1 { line-height: 31px; text-align:center;  background: #2F589C url(th_bg2.gif);
+ background-repeat: repeat-x; background-position: 0 0; color: #FFF; }
+		.title th, .title td { border: 1px solid #CAD9EA; padding: 5px; }
+
+
+/*这个是借鉴一个论坛的样式*/
+table.t1{
+	border:1px solid #cad9ea;
+	color:#666;
+}
+table.t1 th {
+	background-image: url(th_bg1.gif);
+	background-repeat::repeat-x;
+	height:30px;
+}
+table.t1 td,table.t1 th{
+	border:1px solid #cad9ea;
+	padding:0 1em 0;
+}
+table.t1 tr.a1{
+	background-color:#f5fafe;
+}
+
+-->
+
+body {  
+      font-size: 13px;  
+      line-height: 25px;  
+  }  
+  table {  
+      border-top: 1px solid #333;  
+      border-left: 1px solid #333;  
+      width:300px;  
+  }  
+  td {  
+      border-right: 1px solid #333;  
+      border-bottom: 1px solid #333;  
+  }  
+  .title {  
+      text-align: center;  
+      font-weight: bold;  
+      background: #ccc;  
+  }  
+  .center {  
+      text-align: center;  
+  }  
+    
+  #displayInfo {  
+      color:red;  
+  }  
+
+</style> 
+
+</head>
+
+<body>
+	
+<div class="wrap">
+<div class="wrapper">
+	<!-- start menu-->
+
+	<div class=box>
+		<div class=box2>
+			<select id="selectcourse" name="selectcourse" onchange= "selectcourse()"> 
+				<option value = 0 selected>请选择课程
+				{% for course in mycourse %}
+				<option value={{course.id}}>{{course.cname}} 
+				{% endfor %}
+			</select>
+		</div>
+	</div> 
+	<!-- start main -->
+	<div class="main">
+		<div class="sidebar">
+				<div class="menu_box_list">
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id="sid" onclick = "doSubmit()" disabled= true;><a style="width: 220px;height:60px"">开始</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "ping" onclick = "Grade();" disabled= true;><a style="width: 220px;height:60px"">评分</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Nextseg();" id = "nextseg" disabled= true;><a style="width: 220px;height:60px"">下一环节</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randstu();" id="randstu" disabled= true;><a style="width: 220px;height:60px"">随机（人）</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randgroup();" id = "randgroup" disabled= true;><a style="width: 220px;height:60px"">随机（组）</a></button></td>
+					<td class="text-center"><button id = "randzu" type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Fenzu()" disabled= true;><a style="width: 220px;height:60px"">随机分组</a></button></td>
+					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "commitgrade" disabled= true;><a style="width: 220px;height:60px"">提交成绩</a></button></td>
+				</div>
+			<div class="sidebar_grid">
+
+				<h1>课程介绍：</h1><div id="a" style="color:blue"></div>
+				<div class="clear"></div>				
+			</div>		
+		</div>
+		
+		
+		<div class="content">
+			<div class="clear"></div> 
+				<div class="content_btm">
+					<div class="title"  id = "stumess">
+						<h1>学生分组信息</h1>
+					
+						<table border="0" cellpadding="0" cellspacing="0" id="mytable">  
+							<thead>
+								<tr id="row1">  
+									<td>学生</td>  
+									<td>组号</td>
+									<td>成绩</td>								
+								</tr> 
+							</thead>
+							<tbody>
+							</tbody>
+						</table> 
+					</div>
+					
+					<div class="title"  id = "t2s" style="display:none">
+						<h1>教师评价</h1>
+					
+						<table border="0" cellpadding="0" cellspacing="0" id="t2smess">  
+							<thead>
+								<tr id="row1">
+									<td>#</td> 
+									<td>学生姓名</td>  
+									<td>组号</td>
+									<td>成绩（总分100）</td>								
+								</tr> 
+							</thead>
+						</table> 
+						<div><button type="button" id = "t2sb">保存</button></div>
+					</div>
+					
+					<div class="title"  id = "t2g" style="display:none">
+						<h1>教师评价</h1>
+					
+						<table border="0" cellpadding="0" cellspacing="0" id="t2gmess">  
+							<thead>
+								<tr id="row1">   
+									<td>组号</td>
+									<td>成绩（总分100）</td>								
+								</tr> 
+							</thead>
+						</table> 
+						<div><button type="button" id = "t2gb">保存</button></div>
+					</div>
+					
+					<div id = "remind" style="display:none"><h2>教师不参与本环节评价！</h2></div>
+					
+					
+				</div>	
+		</div>
+		
+		<div class="sidebar_right">
+			<div class="content">
+				<div class="clear"></div>
+					<div class="content_btm666">
+						<div class="content_btm_grid" align="center">
+							<h2>环节<span id="thenext"></span></h2>
+							<div class="Countdown" id="time">
+								<span id="m"></span><span class="bd">:</span><span id="s"></span>
+							</div>
+							<br></br><br></br>
+							<td class="text-center"><button type="button" style="width: 120px;height:50px;font-size:17px;" onclick="doPause()" id="tid" disabled= true;><a style="width: 100px;height:50px"">暂停</a></button></td>
+							<td class="text-center"><button type="button" style="width: 120px;height:50px;font-size:17px;" onclick="doGo()" id="gid" disabled= true;><a style="width: 100px;height:50px"">继续</a></button></td>
+						</div>
+					
+					</div>	
+
+			<div class="sidebar_grid666">
+
+				<div class="grid_text">
+				    <h3>学生问题:</h3>
+				</div>
+				<div class="clear"></div>				
+			</div>
+		</div>
+	</div>
+	<!-- end main -->
+<!-- end wrapper   ---->
+</div>
+</div>
+</body>
+</html>
