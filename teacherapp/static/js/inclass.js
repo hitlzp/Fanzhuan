@@ -190,14 +190,10 @@ function selectcourse()//下拉栏选择课程
             var mytime=null;  
             //开始倒计时  
             function doSubmit(){
-                run(); 
-				var C_start = 1;//为1代表教师点击开始按钮了，将其传给学生
 				document.getElementById("randzu").disabled= true;
 				document.getElementById("selectcourse").disabled= true;
-                document.getElementById("sid").disabled=true;  
-                document.getElementById("tid").disabled=false;  
-                document.getElementById("gid").disabled=true;
-				
+				document.getElementById("stid").disabled= false;
+				document.getElementById("sid").disabled=true; 
 				document.getElementById("ping").disabled=false;
 				document.getElementById("randstu").disabled=false;  	
 				document.getElementById("randgroup").disabled=false;  
@@ -209,7 +205,6 @@ function selectcourse()//下拉栏选择课程
 				var post_data ={
 				"name":selectValue,
 				"seg":seg,
-				"C_start":C_start,
 				};
 				$.ajax({
 					 type : "POST", //要插入数据，所以是POST协议 
@@ -225,6 +220,28 @@ function selectcourse()//下拉栏选择课程
 					});
                 return false;  
             }  
+			
+			
+			function timestart()
+			{
+				document.getElementById("stid").disabled=true;  
+                document.getElementById("tid").disabled=false;  
+                document.getElementById("gid").disabled=true;
+				run(); 
+				var t = document.getElementById("selectcourse");   
+				var selectValue=t.options[t.selectedIndex].value;//获取select的值
+				var post_data ={
+				"command":"timestart",
+				"courseid":selectValue,
+				};
+				$.ajax({
+					type : "POST", //要插入数据，所以是POST协议 
+					url : "/teacher/command/", //注意结尾的斜线，否则会出现500错误
+					data : post_data, //JSON数据
+					success: function(mydata3){
+					},
+					});
+			}
               
             //执行倒计时  
             function run(){  
@@ -251,13 +268,40 @@ function selectcourse()//下拉栏选择课程
                 }  
                 document.getElementById("tid").disabled=true;  
                 document.getElementById("gid").disabled=false;  
+				var t = document.getElementById("selectcourse");   
+				var selectValue=t.options[t.selectedIndex].value;//获取select的值
+				var post_data ={
+				"command":"timestop",
+				"courseid":selectValue,
+				};
+				$.ajax({
+					type : "POST", //要插入数据，所以是POST协议 
+					url : "/teacher/command/", //注意结尾的斜线，否则会出现500错误
+					data : post_data, //JSON数据
+					success: function(mydata3){
+					},
+					});
             }  
               
             //继续  
             function doGo(){  
                 run();  
                 document.getElementById("tid").disabled=false;  
-                document.getElementById("gid").disabled=true;  
+                document.getElementById("gid").disabled=true;
+				var t = document.getElementById("selectcourse");   
+				var selectValue=t.options[t.selectedIndex].value;//获取select的值
+				var post_data ={
+				"command":"timecontinue",
+				"courseid":selectValue,
+				};
+				$.ajax({
+					type : "POST", //要插入数据，所以是POST协议 
+					url : "/teacher/command/", //注意结尾的斜线，否则会出现500错误
+					data : post_data, //JSON数据
+					success: function(mydata3){
+					},
+					});	
+					
             }
 			
 			function Grade()//评分
@@ -277,6 +321,20 @@ function selectcourse()//下拉栏选择课程
 				var post_data ={
 				"name":selectValue,
 				};
+				
+				var post_data2 ={
+				"command":"mark",
+				"courseid":selectValue,
+				};
+				$.ajax({
+					type : "POST", //要插入数据，所以是POST协议 
+					url : "/teacher/command/", //注意结尾的斜线，否则会出现500错误
+					data : post_data2, //JSON数据
+					success: function(mydata3){
+					},
+					});	
+				
+				
 				
 				$.ajax({
 				  type : "POST", //要插入数据，所以是POST协议 

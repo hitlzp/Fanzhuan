@@ -5,7 +5,7 @@ from commonapp.views import logcheck
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.template import Context, RequestContext
-from commonapp.models import User_class, Students
+from commonapp.models import User_class, Students, Inclass
 from django.shortcuts import render_to_response
 from teacherapp.models import Course_t, Segmnet_t, Table_t
 from django.http import JsonResponse
@@ -174,6 +174,7 @@ def editcourse(request):#点击课程可以跳转到这个界面浏览自己的�
                 Table_t.objects.filter(id = mytable4.id).update(ratio = int(post["gig"+str(j)]))
             if int(post["self"+str(j)]) > 0:
                 mytable5.save()
+                Table_t.objects.filter(id = mytable5.id).update(ratio = int(post["self"+str(j)]))
         return HttpResponseRedirect("/teacher/coursemanage/")
     dict3 = {"cid":cid, "pp":range(1, segment+1), 'seg_dict': seg_dict}
     return render_to_response("courseedit.html", dict3)
@@ -426,6 +427,10 @@ def inclassajax(request):#处理下拉栏选择课程
         temp.append(seg.ratio)
         segment.append(temp)
         temp = []
+        
+    if Inclass.objects.filter(courseid_id = courseid):#清除之前的上课信息
+                    Inclass.objects.filter(courseid_id = courseid).delete()
+                    
     cdic = {"coursemess":all_objects[0].recommend, "groupnum":all_objects[0].sum / all_objects[0].groupsum,\
             "stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade,\
             "segment": segment}
@@ -442,6 +447,10 @@ def startcourse(request):#教师点击开始按钮
                 Students.objects.filter(course_id = courseid).update(
                                                             grade = 0,\
                                                               )
+            if int(seg)==1:
+                add = Inclass(courseid_id = courseid, command = "start0", isvalue = 1, segment = int(seg)
+                              )
+                add.save()
     return JsonResponse({"yy":1})
 
 def nextsegment(request):#教师点击下一环节
@@ -610,3 +619,11 @@ def GfromT(request):#从前端获取教师对学生的评价信息，课程编�
                 temp = []
     cdic = {"stuname":stu_name, "stugroup":stu_group, "stugrade":stu_grade, "state":state}  
     return JsonResponse(cdic)
+
+def CommandT(request):#教师命令
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            command = request.POST.get('command')#命令
+            Inclass.objects.filter(courseid_id = courseid).update(command = command)
+    return JsonResponse({"rr":1}) 

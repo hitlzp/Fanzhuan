@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from django.shortcuts import render
 from commonapp.views import logcheck
 from django.contrib import auth
 from django.http import HttpResponseRedirect
@@ -8,10 +6,10 @@ from django.contrib.auth.models import User
 from django.template import Context
 from django.shortcuts import render_to_response
 from django.http import JsonResponse
-from commonapp.models import User_class, Students
-from teacherapp.models import Course_t
+from commonapp.models import User_class, Students, Inclass
+from teacherapp.models import Course_t, Segmnet_t, Table_t
 import time
-# Create your views here.
+
 def logcheck_s(request):#检测学生登陆情况
     test = request.user.id
     if not test:
@@ -171,7 +169,119 @@ def Stu_inclass(request):#学生选择即将参加的课程（课堂），返回
     if request.POST:
         if request.is_ajax():
             courseid = request.POST.get('name')
-            print courseid
             selectedcourse = Course_t.objects.filter(id = courseid)[0]#学生选择的一个课程
+                  
     cdic = {"cname":selectedcourse.cname, "courserecommend":selectedcourse.recommend}
     return JsonResponse(cdic)
+
+def Command(request):#学生端从数据库获取教师的命令
+    command = []#本课程当前教师端发送来的命令
+    segtime = []#存储各个环节所占时间
+    segintroduce = []#环节的介绍
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('name')
+            if Inclass.objects.filter(courseid_id = courseid):#判断当前课程是否正在上课，或即将上课
+                thecourse = Inclass.objects.filter(courseid_id = courseid)[0]
+                if thecourse.isvalue == 1:
+                    command.append(thecourse.command)
+                    command.append(thecourse.segment)    
+            all_segment = Segmnet_t.objects.filter(tcourse_id = courseid)
+            for segment in all_segment:
+                segtime.append(segment.minute)
+                segintroduce.append(segment.content)
+    cdic = {"command":command, "segtime":segtime, "segintroduce":segintroduce}
+    return JsonResponse(cdic) 
+
+def GradeS(request):
+    choice = [0]*5#存储需要的评分种类，学生共三种
+    temp1 = []
+    temp2 = []
+    nameingroup = []
+    idingroup = []
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')
+            segment = request.POST.get('segment')
+            thecourse = Course_t.objects.filter(id = courseid)[0]
+            thesegment = Segmnet_t.objects.filter(tcourse_id = courseid)[int(segment) - 1]
+            all_table = Table_t.objects.filter(tsegment_id = thesegment.id)
+            for table in all_table:
+                choice[table.choice -1] = table.ratio
+            groupnum = thecourse.sum / thecourse.groupsum
+            stuid = request.user.id
+            stuname = User.objects.filter(id = stuid)[0].username
+            mygroup = Students.objects.filter(stu_id = stuid, course_id = courseid)[0].group
+            for i in range(1, groupnum + 1):
+                groupstu = Students.objects.filter(group = i)
+                for i in range(0, len(groupstu)):
+                    temp1.append(groupstu[i].stu_id)
+                    name = User.objects.filter(id = groupstu[i].stu_id)[0].username
+                    temp2.append(name)
+                idingroup.append(temp1)
+                nameingroup.append(temp2)
+                temp1 = []
+                temp2 = []
+            
+    #groupnum  小组数量
+    #choice 五种评分各占比例
+    #stuid 自评学生id
+    #stuname 自评学生姓名
+    #mygroup 当前学生所在的小组号
+    #idingroup保存小组成员id 以组为单位[[...], [...], [...]]
+    #nameingroup保存小组成员姓名以组为单位[[...], [...], [...]]
+    #thecourse.groupsum小组人数
+    cdic = {"groupnum":groupnum, "choice":choice, "stuid":stuid, "stuname":stuname, "mygroup":mygroup, \
+            "nameingroup":nameingroup, "idingroup":idingroup, "groupsum":thecourse.groupsum}
+    return JsonResponse(cdic) 
+
+def Savegrade(request):#从前端获取学生的评价信息
+    stugrade = []#存放选择本课程的每位同学的成绩
+    stugroup = []#存放选择本课程学生的小组号
+    stuids = []#存放选择本课程学生的id
+    groupid = [] #当前用户小组成员的id
+    ratio = [0]*5#各个部分所占的比例
+    if request.POST:
+        if request.is_ajax():
+            stuid = request.user.id
+            groupofmine = request.POST.get('stugroup')
+            courseid = request.POST.get('courseid')
+            segment = request.POST.get('segment')
+            groupsum = request.POST.get('groupsum')
+            g2ggrade = request.POST.getlist('g2ggrade')
+            giggrade = request.POST.getlist('giggrade')
+            selfgrade = request.POST.getlist('selfgrade')
+            
+            allperson = Course_t.objects.filter(id = courseid)[0].sum
+            ratios = Table_t.objects.filter(tsegment_id = int(segment))
+            for aa in ratios:
+                ratio[int(aa.choice)-1] = int(aa.ratio)
+            hahh = Students.objects.filter(course_id = courseid, group = int(groupofmine))
+            for theid in hahh:
+                groupid.append(theid.id)
+            all_grade = Students.objects.filter(course_id = courseid)
+            for grade in all_grade:
+                stugrade.append(grade.grade)
+                stugroup.append(grade.group)
+                stuids.append(grade.id)
+            for i in range(0, len(all_grade)):#更新了组间评论成绩
+                for j in range(1, len(g2ggrade) + 1):
+                    if(stugroup[i] == j):
+                        stugrade[i] += int(g2ggrade[j]) * ratio[2] / (100.00 * allperson)
+            for w in range(0, len(all_grade)): #更新了组内评论成绩
+                for u in range(0, int(groupsum)):
+                    if groupid[u] == all_grade[w].id:
+                        stugrade[w] += int(giggrade[u+1]) * ratio[3] / (100.00 * int(groupsum))
+            for k in range(0, len(stuids)):
+                Students.objects.filter(id = stuids[k]).update(
+                                                                  grade = stugrade[k],\
+                                                                  )
+                
+            mypregrade = Students.objects.filter(course_id = courseid, stu_id = stuid)[0].grade#更新了自评成绩
+            newgrade = mypregrade + int(selfgrade[0]) * ratio[4] / 100.00                                                   
+            Students.objects.filter(course_id = courseid, stu_id = stuid).update(
+                                                                  grade = newgrade,\
+                                                                  ) 
+            print "OK"
+     
+    return JsonResponse({"rr":1}) 

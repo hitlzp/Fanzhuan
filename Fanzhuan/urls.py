@@ -17,11 +17,11 @@ from django.contrib import admin
 from commonapp.views import menu,logout, forgot
 from teacherapp.views import login_t,reg_t, coursemanage, addcourse, editcourse, editcourse_ajax, teachermain,\
 ajax_course, addsegment, ajax_segment, addfinally, ajax_finally,inclassajax, inclass, startcourse,nextsegment,\
-Fenzu, Randstu, Randgroup, GfromT, Grade_t
+Fenzu, Randstu, Randgroup, GfromT, Grade_t, CommandT
 
 
 from studentapp.views import login_s, reg_s, studentmain, Mycourse, Mycourseajax, Addcourse, Coursemessage, Stuinclass,\
-Stu_inclass
+Stu_inclass, Command, GradeS, Savegrade
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -57,5 +57,9 @@ urlpatterns = [
     url(r'^student/addcourse/$', Addcourse),
     url(r'^student/coursemessage/$', Coursemessage),
     url(r'^student/inclass/$', Stuinclass),
-    url(r'^student/stuinclassajax/$', Stu_inclass)
+    url(r'^student/stuinclassajax/$', Stu_inclass),
+    url(r'^student/command/$', Command),
+    url(r'^teacher/command/$', CommandT),
+    url(r'^student/grades/$', GradeS),
+    url(r'^student/savegrade/$', Savegrade),
 ]
