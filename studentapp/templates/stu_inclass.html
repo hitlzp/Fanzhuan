@@ -104,6 +104,12 @@ body {
 </head>
 
 <body>
+	<div id = "a">
+		<ul>
+			<li><a href="/student/main/">|返回首页</a></li>
+			<li><a href="/logout/">|注销</a></li>
+		</ul>
+	</div>
     <div class="main-body">	
         <div class="container">
             <div class="row">               
@@ -148,11 +154,14 @@ body {
                             </div>   
 
                             <div class="menu-container">
-                                <div class="block-keep-ratio block-keep-ratio-1-1 block-keep-ratio-md-2-1 block-width-full gallery">                                    
-                                    <a href="gallery.html" class="main-menu-link  block-keep-ratio__content">
-                                        <span class="main-menu-link-text">
-                                            教师通知   
-                                        </span>                                            
+                                <div class="block-keep-ratio block-keep-ratio-1-1 block-keep-ratio-md-2-1 block-width-full gallery">                              
+                                    <a class="main-menu-link  block-keep-ratio__content"> 
+										<textarea id = "question1" disabled="disabled" style= "width:100%;height:51px; background-color: #1f2932;color:white;resize: none;"></textarea>
+										<textarea id = "question2" disabled="disabled" style= "width:100%;height:51px; background-color: #1f2932;color:white;resize: none;"></textarea>
+										<textarea id = "question3" disabled="disabled" style= "width:100%;height:51px; background-color: #1f2932;color:white;resize: none;"></textarea>
+										<textarea id = "question4" disabled="disabled" style= "width:100%;height:51px; background-color: #1f2932;color:white;resize: none;"></textarea>
+										<textarea id = "question5" disabled="disabled" style= "width:100%;height:51px; background-color: #1f2932;color:white;resize: none;"></textarea>
+										<textarea id = "question6" disabled="disabled" style= "width:100%;height:51px; background-color: #1f2932;color:white;resize: none;"></textarea>
                                     </a>                                    
                                 </div>                                
                             </div>
@@ -178,30 +187,14 @@ body {
                             </div>    
                         </div>
                         <div class="row margin-b-30">
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div class="box london">
-                                    <div class="box-icon">
-                                        <img src="/static/img/home-img-2.jpg" alt="Image" class="img-responsive">
-                                    </div>
-                                    <div class="info float-container">
-                                        <div class="col-sm-12 london-title">
-                                            <h3 class="text-uppercase">Proin gravida nibhvel</h3>
-                                            <h4 class="text-uppercase">mauris vitae erat</h4>
-                                        </div>
-                                        <p>Sean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi accumsan ipsum velit. </p><hr />
-                                        <div class="col-sm-12 location-main"> 
-                                            <div class="pull-left location">
-                                                <i class="fa fa-map-marker fa-2x"></i><span>LONDON</span>
-                                            </div>
-                                            <div class="pull-right user-icons">
-                                                <a href="#"><i class="fa fa-star fa-2x"></i></a>
-                                                <a href="#"><i class="fa fa-user fa-2x"></i></a>
-                                                <a href="#"><i class="fa fa-twitter fa-2x"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+							<div style = "padding:1% 2%">
+								<form method="POST">
+								<div>
+								<textarea id = "question" style= "width:100%; background-color: #1f2932;color:white;resize: none;"></textarea>
+								<button type="button" onclick = "myquestion()" style= "width:10%;background:#335aa4;color:white">提问</button>
+								</div>
+								</form>
+							</div>
                         </div> <!-- row -->
 
                     </div> <!-- .content-main -->

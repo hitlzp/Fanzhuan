@@ -3,11 +3,10 @@ function selectcourse()//下拉栏选择课程
 			   //需要实现控制可以加if() while()实现
 			var t = document.getElementById("selectcourse");   
 			var selectValue=t.options[t.selectedIndex].value;//获取select的值
-			  //alert(selectValue);
-			
+
 			document.getElementById("sid").disabled= false;
 			document.getElementById("randzu").disabled= false;
-			
+			document.getElementById("sss").disabled= false;
 			
 			var post_data ={
 			"name":selectValue,
@@ -30,6 +29,7 @@ function selectcourse()//下拉栏选择课程
 			  // dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 			  // contentType : 'application/json',
 			});
+			stuquestion();
 			
 		}
 		
@@ -464,8 +464,6 @@ function selectcourse()//下拉栏选择课程
 								"courseid":selectValue,//课程id
 								"segnum":seg-1,//环节编号，seg-1从0开始
 								};
-								alert(thegrade);
-								alert(thegrade2);
 								$.ajax({
 								  type : "POST", //要插入数据，所以是POST协议 
 								  url : "/teacher/gradefromteacher/", //注意结尾的斜线，否则会出现500错误
@@ -514,3 +512,60 @@ function selectcourse()//下拉栏选择课程
 				});
 				
 			}
+			
+function stuquestion()//教师端显示学生的提问
+{
+	var t = document.getElementById("selectcourse");   
+	var selectValue=t.options[t.selectedIndex].value;//获取select的值
+	var post_data ={
+	"courseid":selectValue,
+	};
+
+	$.ajax({
+		type : "POST", //要插入数据，所以是POST协议 
+		url : "/teacher/question/", //注意结尾的斜线，否则会出现500错误
+		data : post_data, //JSON数据
+		success: function(mydata){
+			if (mydata["num"] >= 6)
+			{
+				document.getElementById("question1").innerHTML = mydata["stuname"][mydata["num"] - 1] + " : " + mydata["question"][mydata["num"] - 1];
+				document.getElementById("question2").innerHTML = mydata["stuname"][mydata["num"] - 2] + " : " + mydata["question"][mydata["num"] - 2];
+				document.getElementById("question3").innerHTML = mydata["stuname"][mydata["num"] - 3] + " : " + mydata["question"][mydata["num"] - 3];
+				document.getElementById("question4").innerHTML = mydata["stuname"][mydata["num"] - 4] + " : " + mydata["question"][mydata["num"] - 4];
+				document.getElementById("question5").innerHTML = mydata["stuname"][mydata["num"] - 5] + " : " + mydata["question"][mydata["num"] - 5];
+				document.getElementById("question6").innerHTML = mydata["stuname"][mydata["num"] - 6] + " : " + mydata["question"][mydata["num"] - 6];
+				
+			}
+			else if(mydata["num"] >= 1 && mydata["num"] < 6)
+			{
+				for(var i = mydata["num"] - 1; i >=0;i--)
+				{
+					document.getElementById("question"+i.toString()).innerHTML = mydata["stuname"][i] + " : " + mydata["question"][i];
+				}
+			}
+		},
+	});
+	mytime = setTimeout("stuquestion()",1000);  
+}
+
+function MesstoStu()//教师给学生发送通知
+{
+	var t = document.getElementById("selectcourse");   
+	var selectValue=t.options[t.selectedIndex].value;//获取select的值
+
+	var text = document.getElementById('messtostu').value;
+	var post_data ={
+		"courseid":selectValue,
+		"text":text,
+		};
+
+		$.ajax({
+			type : "POST", //要插入数据，所以是POST协议 
+			url : "/teacher/messtostu/", //注意结尾的斜线，否则会出现500错误
+			data : post_data, //JSON数据
+			success: function(mydata){
+				document.getElementById('messtostu').value = "";
+			},
+		});
+
+}

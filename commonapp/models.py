@@ -18,3 +18,8 @@ class Inclass(models.Model):#课堂中教师控制学生端
     command = models.CharField(max_length=100)
     segment  = models.IntegerField(default=0)
     isvalue = models.IntegerField(default=0)
+    
+class Stumess(models.Model):
+    courseid = models.ForeignKey(Course_t)
+    stuname = models.CharField(max_length=100)
+    question = models.TextField()

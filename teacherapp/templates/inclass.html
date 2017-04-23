@@ -6,8 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <link href="/static/css/style2.css" rel="stylesheet" type="text/css" media="all" />
+ 
 <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/static/js/inclass.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+
+
 <style> 
 .box{border:1px solid 
 #C0C0C0;width:1280px;height:50px;clip:rect(0px,181px,18px,0px);overflow:hidden;} 
@@ -99,125 +103,144 @@ body {
 </head>
 
 <body>
-	
-<div class="wrap">
-<div class="wrapper">
-	<!-- start menu-->
+<div class="main-body">
+	<div class="wrap">
+		<div class="wrapper">
+			<!-- start menu-->
 
-	<div class=box>
-		<div class=box2>
-			<select id="selectcourse" name="selectcourse" onchange= "selectcourse()"> 
-				<option value = 0 selected>请选择课程
-				{% for course in mycourse %}
-				<option value={{course.id}}>{{course.cname}} 
-				{% endfor %}
-			</select>
-		</div>
-	</div> 
-	<!-- start main -->
-	<div class="main">
-		<div class="sidebar">
-				<div class="menu_box_list">
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id="sid" onclick = "doSubmit()" disabled= true;><a style="width: 220px;height:60px"">开始</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "ping" onclick = "Grade();" disabled= true;><a style="width: 220px;height:60px"">评分</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Nextseg();" id = "nextseg" disabled= true;><a style="width: 220px;height:60px"">下一环节</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randstu();" id="randstu" disabled= true;><a style="width: 220px;height:60px"">随机（人）</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randgroup();" id = "randgroup" disabled= true;><a style="width: 220px;height:60px"">随机（组）</a></button></td>
-					<td class="text-center"><button id = "randzu" type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Fenzu()" disabled= true;><a style="width: 220px;height:60px"">随机分组</a></button></td>
-					<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "commitgrade" disabled= true;><a style="width: 220px;height:60px"">提交成绩</a></button></td>
+			<div class=box>
+				<div class=box2>
+					<select id="selectcourse" name="selectcourse" onchange= "selectcourse()"> 
+						<option value = 0 selected>请选择课程
+						{% for course in mycourse %}
+						<option value={{course.id}}>{{course.cname}} 
+						{% endfor %}
+					</select>
 				</div>
-			<div class="sidebar_grid">
-
-				<h1>课程介绍：</h1><div id="a" style="color:blue"></div>
-				<div class="clear"></div>				
-			</div>		
-		</div>
-		
-		
-		<div class="content">
-			<div class="clear"></div> 
-				<div class="content_btm">
-					<div class="title"  id = "stumess">
-						<h1>学生分组信息</h1>
-					
-						<table border="0" cellpadding="0" cellspacing="0" id="mytable">  
-							<thead>
-								<tr id="row1">  
-									<td>学生</td>  
-									<td>组号</td>
-									<td>成绩</td>								
-								</tr> 
-							</thead>
-							<tbody>
-							</tbody>
-						</table> 
-					</div>
-					
-					<div class="title"  id = "t2s" style="display:none">
-						<h1>教师评价</h1>
-					
-						<table border="0" cellpadding="0" cellspacing="0" id="t2smess">  
-							<thead>
-								<tr id="row1">
-									<td>#</td> 
-									<td>学生姓名</td>  
-									<td>组号</td>
-									<td>成绩（总分100）</td>								
-								</tr> 
-							</thead>
-						</table> 
-						<div><button type="button" id = "t2sb">保存</button></div>
-					</div>
-					
-					<div class="title"  id = "t2g" style="display:none">
-						<h1>教师评价</h1>
-					
-						<table border="0" cellpadding="0" cellspacing="0" id="t2gmess">  
-							<thead>
-								<tr id="row1">   
-									<td>组号</td>
-									<td>成绩（总分100）</td>								
-								</tr> 
-							</thead>
-						</table> 
-						<div><button type="button" id = "t2gb">保存</button></div>
-					</div>
-					
-					<div id = "remind" style="display:none"><h2>教师不参与本环节评价！</h2></div>
-					
-					
-				</div>	
-		</div>
-		
-		<div class="sidebar_right">
-			<div class="content">
-				<div class="clear"></div>
-					<div class="content_btm666">
-						<div class="content_btm_grid" align="center">
-							<h2>环节<span id="thenext"></span></h2>
-							<div class="Countdown" id="time">
-								<span id="m"></span><span class="bd">:</span><span id="s"></span>
-							</div>
-							<br></br><br></br>
-							<td class="text-center"><button type="button" style="width: 30%;height:50px;font-size:17px;" onclick="timestart()" id="stid" disabled= true;><a style="width: 30%;height:50px"">计时</a></button></td>
-							<td class="text-center"><button type="button" style="width: 30%;height:50px;font-size:17px;" onclick="doPause()" id="tid" disabled= true;><a style="width: 30%;height:50px"">暂停</a></button></td>
-							<td class="text-center"><button type="button" style="width: 30%;height:50px;font-size:17px;" onclick="doGo()" id="gid" disabled= true;><a style="width: 30%;height:50px"">继续</a></button></td>
+			</div> 
+			<!-- start main -->
+			<div class="main">
+				<div class="sidebar">
+						<div class="menu_box_list">
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id="sid" onclick = "doSubmit()" disabled= true;><a style="width: 220px;height:60px"">开始</a></button></td>
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "ping" onclick = "Grade();" disabled= true;><a style="width: 220px;height:60px"">评分</a></button></td>
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Nextseg();" id = "nextseg" disabled= true;><a style="width: 220px;height:60px"">下一环节</a></button></td>
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randstu();" id="randstu" disabled= true;><a style="width: 220px;height:60px"">随机（人）</a></button></td>
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Randgroup();" id = "randgroup" disabled= true;><a style="width: 220px;height:60px"">随机（组）</a></button></td>
+							<td class="text-center"><button id = "randzu" type="button" style="width: 100%;height:60px;font-size:17px;" onclick = "Fenzu()" disabled= true;><a style="width: 220px;height:60px"">随机分组</a></button></td>
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "commitgrade" disabled= true;><a style="width: 220px;height:60px"">提交成绩</a></button></td>
+							<td class="text-center"><button type="button" style="width: 100%;height:60px;font-size:17px;" id = "sss" disabled= true; href="javascript:;" data-toggle="modal" data-target="#templatemo_modal"><a style="width: 220px;height:60px"">通知</a></button></td>
 						</div>
-					
-					</div>	
-
-			<div class="sidebar_grid666">
-
-				<div class="grid_text">
-				    <h3>学生问题:</h3>
+						<div class="sidebar_grid" style = "font-size:20px">
+						课程介绍：<div id="a" style="color:blue"></div>
+						</div>			
+				</div>		
+				
+				<div class="content">
+					<div class="clear"></div> 
+						<div class="content_btm">
+							<div class="title"  id = "stumess">
+								<h1>学生分组信息</h1>
+							
+								<table border="0" cellpadding="0" cellspacing="0" id="mytable">  
+									<thead>
+										<tr id="row1">  
+											<td>学生</td>  
+											<td>组号</td>
+											<td>成绩</td>								
+										</tr> 
+									</thead>
+									<tbody>
+									</tbody>
+								</table> 
+							</div>
+							
+							<div class="title"  id = "t2s" style="display:none">
+								<h1>教师评价</h1>
+							
+								<table border="0" cellpadding="0" cellspacing="0" id="t2smess">  
+									<thead>
+										<tr id="row1">
+											<td>#</td> 
+											<td>学生姓名</td>  
+											<td>组号</td>
+											<td>成绩（总分100）</td>								
+										</tr> 
+									</thead>
+								</table> 
+								<div><button type="button" id = "t2sb">保存</button></div>
+							</div>
+							
+							<div class="title"  id = "t2g" style="display:none">
+								<h1>教师评价</h1>
+							
+								<table border="0" cellpadding="0" cellspacing="0" id="t2gmess">  
+									<thead>
+										<tr id="row1">   
+											<td>组号</td>
+											<td>成绩（总分100）</td>								
+										</tr> 
+									</thead>
+								</table> 
+								<div><button type="button" id = "t2gb">保存</button></div>
+							</div>
+							
+							<div id = "remind" style="display:none"><h2>教师不参与本环节评价！</h2></div>
+						</div>	
 				</div>
-				<div class="clear"></div>				
+				
+				<div class="sidebar_right">
+					<div class="content">
+						<div class="clear"></div>
+							<div class="content_btm666">
+								<div class="content_btm_grid" align="center">
+									<h2>环节<span id="thenext"></span></h2>
+									<div class="Countdown" id="time">
+										<span id="m"></span><span class="bd">:</span><span id="s"></span>
+									</div>
+									<br></br><br></br>
+									<td class="text-center"><button type="button" style="width: 30%;height:50px;font-size:17px;" onclick="timestart()" id="stid" disabled= true;><a style="width: 30%;height:50px"">计时</a></button></td>
+									<td class="text-center"><button type="button" style="width: 30%;height:50px;font-size:17px;" onclick="doPause()" id="tid" disabled= true;><a style="width: 30%;height:50px"">暂停</a></button></td>
+									<td class="text-center"><button type="button" style="width: 30%;height:50px;font-size:17px;" onclick="doGo()" id="gid" disabled= true;><a style="width: 30%;height:50px"">继续</a></button></td>
+								</div>
+							
+							</div>	
+							<div class="sidebar_grid666" style = "font-size:20px;color:white">
+							<div class="grid_text">
+								学生提问:<br></br>
+								<textarea id = "question1" disabled="disabled" style= "width:120%;height:60px; background-color: #1f2932;color:white;resize: none;"></textarea>
+								<textarea id = "question2" disabled="disabled" style= "width:120%;height:60px; background-color: #1f2932;color:white;resize: none;"></textarea>
+								<textarea id = "question3" disabled="disabled" style= "width:120%;height:60px; background-color: #1f2932;color:white;resize: none;"></textarea>
+								<textarea id = "question4" disabled="disabled" style= "width:120%;height:60px; background-color: #1f2932;color:white;resize: none;"></textarea>
+								<textarea id = "question5" disabled="disabled" style= "width:120%;height:60px; background-color: #1f2932;color:white;resize: none;"></textarea>
+								<textarea id = "question6" disabled="disabled" style= "width:120%;height:60px; background-color: #1f2932;color:white;resize: none;"></textarea>
+							</div>
+						
+						<div class="clear"></div>
+					</div>
+				</div>
 			</div>
+			<!-- end main -->
+		<!-- end wrapper   ---->
 		</div>
 	</div>
-	<!-- end main -->
-<!-- end wrapper   ---->
 </div>
-</div>
+	<!-- Modal -->
+	<div class="modal fade" id="templatemo_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 class="modal-title" id="myModalLabel">通知</h4>
+			
+				<br /><br /> 
+				<div>
+				<textarea id = "messtostu" style= "width:100%;height:100px; background-color:#ffffff;color:101519;resize: none;"></textarea>
+				<button type="button"  onclick = "MesstoStu()";" class="btn btn-default" data-dismiss="modal">发送</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+	    </div>
+	  </div>
+	</div>
+	</div>
 </body>
 </html>

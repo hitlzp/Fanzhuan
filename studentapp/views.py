@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.template import Context
 from django.shortcuts import render_to_response
 from django.http import JsonResponse
-from commonapp.models import User_class, Students, Inclass
+from commonapp.models import User_class, Students, Inclass, Stumess
 from teacherapp.models import Course_t, Segmnet_t, Table_t
 import time
 from django.db import transaction
@@ -287,3 +287,33 @@ def Savegrade(request):#从前端获取学生的评价信息
                 print "OK"
      
     return JsonResponse({"rr":1}) 
+
+def Stuquestion(request):
+    if request.POST:
+        if request.is_ajax():
+            with transaction.atomic():#Django 的事务管理
+                stuid = request.user.id
+                text = request.POST.get('text')
+                courseid = request.POST.get('name')
+                stuname = User.objects.filter(id = stuid)[0].username
+                add=Stumess(courseid_id = courseid, stuname = stuname, question = text, \
+                            )
+                add.save()
+                
+    return JsonResponse({"rr":1})
+
+def ThquestiontoStu(request):
+    question = []
+    stuname = []
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            message = Stumess.objects.filter(courseid_id = courseid)
+            num = len(message)
+            print courseid
+            print num
+            for mes in message:
+                question.append(mes.question)
+                stuname.append(mes.stuname)
+    cdic = {"num":num, "question":question, "stuname":stuname}
+    return JsonResponse(cdic)

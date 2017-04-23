@@ -26,6 +26,7 @@ function doSubmit()//选择将要参加的课程
 	// dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 	// contentType : 'application/json',
 	});
+	showmess();
 }
 
 startbutton = 0; // 状态1
@@ -334,4 +335,68 @@ function doPause(){
             //继续  
 function doGo(){  
                 run();   
-            }			
+            }	
+
+function myquestion()//学生提问
+{
+	var text = document.getElementById('question').value;
+	
+	var course = document.getElementsByName("selectcourse");
+	for(var i =0; i < course.length;i++)
+	{
+		if(course[i].checked == true)
+			courseid = course[i].value;
+	}
+	var post_data ={
+	"name":courseid,
+	"text":text,
+	};
+
+	$.ajax({
+		type : "POST", //要插入数据，所以是POST协议 
+		url : "/student/question/", //注意结尾的斜线，否则会出现500错误
+		data : post_data, //JSON数据
+		success: function(mydata){
+			document.getElementById('question').value = "";
+		},
+	});
+}	
+
+
+function showmess()
+{
+	var course = document.getElementsByName("selectcourse");
+	for(var i =0; i < course.length;i++)
+	{
+		if(course[i].checked == true)
+			courseid = course[i].value;
+	}
+	var post_data ={
+	"courseid":courseid,
+	};
+	$.ajax({
+		type : "POST", //要插入数据，所以是POST协议 
+		url : "/student/showquestion/", //注意结尾的斜线，否则会出现500错误
+		data : post_data, //JSON数据
+		success: function(mydata){
+			if (mydata["num"] >= 6)
+			{
+				document.getElementById("question1").innerHTML = mydata["stuname"][mydata["num"] - 1] + " : " + mydata["question"][mydata["num"] - 1];
+				document.getElementById("question2").innerHTML = mydata["stuname"][mydata["num"] - 2] + " : " + mydata["question"][mydata["num"] - 2];
+				document.getElementById("question3").innerHTML = mydata["stuname"][mydata["num"] - 3] + " : " + mydata["question"][mydata["num"] - 3];
+				document.getElementById("question4").innerHTML = mydata["stuname"][mydata["num"] - 4] + " : " + mydata["question"][mydata["num"] - 4];
+				document.getElementById("question5").innerHTML = mydata["stuname"][mydata["num"] - 5] + " : " + mydata["question"][mydata["num"] - 5];
+				document.getElementById("question6").innerHTML = mydata["stuname"][mydata["num"] - 6] + " : " + mydata["question"][mydata["num"] - 6];
+				
+			}
+			else if(mydata["num"] >= 1 && mydata["num"] < 6)
+			{
+				for(var i = mydata["num"] - 1; i >=0;i--)
+				{
+					document.getElementById("question"+i.toString()).innerHTML = mydata["stuname"][i] + " : " + mydata["question"][i];
+				}
+			}
+		},
+	});
+	setTimeout("showmess()",1000); 
+}		

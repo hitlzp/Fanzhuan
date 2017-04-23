@@ -5,7 +5,7 @@ from commonapp.views import logcheck
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.template import Context, RequestContext
-from commonapp.models import User_class, Students, Inclass
+from commonapp.models import User_class, Students, Inclass, Stumess
 from django.shortcuts import render_to_response
 from teacherapp.models import Course_t, Segmnet_t, Table_t
 from django.http import JsonResponse
@@ -631,3 +631,29 @@ def CommandT(request):#教师命令
             command = request.POST.get('command')#命令
             Inclass.objects.filter(courseid_id = courseid).update(command = command)
     return JsonResponse({"rr":1}) 
+
+def StuquestiontoTh(request):#教师端刷新获取学生的问题并显示
+    question = []
+    stuname = []
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            message = Stumess.objects.filter(courseid_id = courseid)
+            num = len(message)
+            for mes in message:
+                question.append(mes.question)
+                stuname.append(mes.stuname)
+    cdic = {"num":num, "question":question, "stuname":stuname}
+    return JsonResponse(cdic)
+
+def MestoStu(request):
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            text = request.POST.get('text')#课程id
+            print courseid
+            print text
+            add=Stumess(courseid_id = courseid, stuname = "teacher", question = text, \
+                            )
+            add.save()
+    return JsonResponse({"rr":1})

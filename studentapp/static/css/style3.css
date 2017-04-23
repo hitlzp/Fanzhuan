@@ -90,9 +90,9 @@ body {
 
 .main-menu-link-text {
 	margin-bottom: 0;
-	position: absolute;
-	left: 20%;
-	bottom: 70%;
+    position: absolute;
+    bottom: 70%;
+    left: 14%;
 }
 
 .main-menu-link-text2 {
