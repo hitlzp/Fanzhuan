@@ -33,6 +33,7 @@ starttimebutton = 0; // 状态2
 stoptimebutton = 0;
 coutinuetimebutton = 0;
 markbutton = 0;
+nextsegbutton = 0
 function command()
 {
 	var course = document.getElementsByName("selectcourse");
@@ -51,18 +52,30 @@ function command()
 		url : "/student/command/", //注意结尾的斜线，否则会出现500错误
 		data : post_data, //JSON数据
 		success: function(mydata){
-			if (mydata["command"][0] == "start0" && startbutton == 0)//教师点击开始按钮
+			if (mydata["command"][0] == "start0" && startbutton == 0)//教师第一次点击开始按钮
 			{
 				document.getElementById("cseg").style.display="none";//隐藏
-				document.getElementById("cseg2").innerHTML = "环节1 ";
+				document.getElementById("cseg2").innerHTML = "环节:";
+				document.getElementById("cseg3").innerHTML = 1;
 				document.getElementById("m").innerHTML = mydata["segtime"][0];
 				m = mydata["segtime"][0];
 				document.getElementById("courseorseg").style.display="none";//隐藏
 				document.getElementById("courseorseg2").style.display="";//显
-				document.getElementById("courserecommend").innerHTML = mydata["segintroduce"][0];
+				huanjie = document.getElementById("cseg3").innerText;
+				document.getElementById("courserecommend").innerHTML = mydata["segintroduce"][huanjie - 1];
 				startbutton = 1;
 			}
-			if(mydata["command"][0] == "timestart" && starttimebutton == 0)//教师点击计时按钮
+			if (mydata["command"][0] == "start" && startbutton == 0)//教师非第一次点击开始按钮
+			{
+				startbutton = 1;
+				markbutton = 0;
+				document.getElementById("g2g").style.display="none";//隐藏
+				document.getElementById("gig").style.display="none";//隐藏
+				document.getElementById("self").style.display="none";//隐藏
+			}
+			
+			if(
+			mydata["command"][0] == "timestart" && starttimebutton == 0)//教师点击计时按钮
 			{
 				starttimebutton = 1;
 				run();
@@ -79,10 +92,11 @@ function command()
 				stoptimebutton = 0;
 				doGo();
 			}
-			if(mydata["command"][0] == "mark" && markbutton == 0)//教师点击继续按钮
+			if(mydata["command"][0] == "mark" && markbutton == 0)//教师点击评分按钮
 			{
+				nextsegbutton = 0;
 				markbutton = 1;
-				huanjie = 2; //待定
+				huanjie = document.getElementById("cseg3").innerText;
 				
 				
 				var course = document.getElementsByName("selectcourse");
@@ -111,7 +125,7 @@ function command()
 						
 						var giggrade=new Array()
 						giggrade[0] = mydata["groupsum"] - 1;
-						for(var t = 1; t < mydata["groupnum"] + 1; t++)//初始化数组为0
+						for(var t = 1; t < mydata["groupsum"] + 1; t++)//初始化数组为0
 						{
 							giggrade[t] = 0;
 						}
@@ -213,30 +227,37 @@ function command()
 					var obj = event.srcElement;//这里火狐会报错
 						if(obj.type == "button"){
 							if(obj.id == "commitgrade"){
-								for(var w = 1; w < mydata["groupnum"] + 1;w++)
+								if(mydata["choice"][2] != 0)
 								{
-									if(mydata["mygroup"] == w)
+									for(var w = 1; w < mydata["groupnum"] + 1;w++)
 									{
-										g2ggrade[w] = 0;
+										if(mydata["mygroup"] == w)
+										{
+											g2ggrade[w] = 0;
+										}
+										else{
+										g2ggrade[w] = document.getElementById("g2g_input"+w.toString()).value;}
 									}
-									else{
-									g2ggrade[w] = document.getElementById("g2g_input"+w.toString()).value;}
 								}
-								for(var w = 1; w < mydata["groupsum"]+1;w++)
-								{
-									if(mydata["idingroup"][mydata["mygroup"]-1][w-1] == mydata["stuid"])
-									{
-										giggrade[w] = 0;
-									}
-									else{
-									giggrade[w] = document.getElementById("gig_input"+w.toString()).value;}
-								}
-								selfgrade = document.getElementById("self_input").value;
-								document.getElementById("commitgrade").disabled= true;
 								
-								alert(g2ggrade);
-								alert(giggrade);
-								alert(selfgrade);
+								if(mydata["choice"][3] != 0)
+								{
+									for(var w = 1; w < mydata["groupsum"]+1;w++)
+									{
+										if(mydata["idingroup"][mydata["mygroup"]-1][w-1] == mydata["stuid"])
+										{
+											giggrade[w] = 0;
+										}
+										else{
+										giggrade[w] = document.getElementById("gig_input"+w.toString()).value;}
+									}
+								}
+								if(mydata["choice"][4] != 0)
+								{
+									selfgrade = document.getElementById("self_input").value;
+									document.getElementById("commitgrade").disabled= true;
+								}
+								
 								var post_data2 ={
 									"g2ggrade":g2ggrade,
 									"giggrade":giggrade,
@@ -254,9 +275,7 @@ function command()
 									  success: function(mydata3){
 									  },
 									});
-									document.getElementById("g2g").style.display="none";//隐藏
-									document.getElementById("gig").style.display="none";//隐藏
-									document.getElementById("self").style.display="none";//隐藏
+								document.getElementById("close").click();
 							}
 						}
 					}
@@ -265,9 +284,24 @@ function command()
 				});
 				document.getElementById("mark").click();
 			}
+			if(mydata["command"][0] == "nextseg" && nextsegbutton == 0)//教师点击下一环节
+			{
+				nextsegbutton  = 1;
+				startbutton = 0;
+				document.getElementById("cseg3").innerHTML++;
+				huanjie = document.getElementById("cseg3").innerText;
+				document.getElementById("courserecommend").innerHTML = mydata["segintroduce"][huanjie - 1];
+				document.getElementById("commitgrade").disabled= false;
+			}
+			if(mydata["command"][0] == "over")//课程结束
+			{
+				alert("课程结束！");
+			}
+			
+			
 		},
 	});
-	//setTimeout("command()",1000); 
+	setTimeout("command()",1000); 
 }
 
 var m = 0;

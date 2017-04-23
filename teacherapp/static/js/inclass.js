@@ -151,11 +151,22 @@ function selectcourse()//下拉栏选择课程
 					m = mydata["time"];
 					s = 0;
 					document.getElementById("nextseg").disabled=true;
-					document.getElementById("ping").disabled=false;
 				},
 				// dataType : 'json', //在ie浏览器下我没有加dataTpye结果报错，所以建议加上
 				// contentType : 'application/json',
 			});
+			
+			var post_data2 ={
+			"command":"nextseg",
+			"courseid":selectValue,
+			};
+			$.ajax({
+				type : "POST", //要插入数据，所以是POST协议 
+				url : "/teacher/command/", //注意结尾的斜线，否则会出现500错误
+				data : post_data2, //JSON数据
+				success: function(mydata3){
+				},
+				});
 		}
 		
 		
@@ -467,6 +478,18 @@ function selectcourse()//下拉栏选择课程
 									if(mydata3["state"] == 1)
 									{
 										alert("课程结束!");
+										
+										var post_data ={
+										"command":"over",
+										"courseid":selectValue,
+										};
+										$.ajax({
+											type : "POST", //要插入数据，所以是POST协议 
+											url : "/teacher/command/", //注意结尾的斜线，否则会出现500错误
+											data : post_data, //JSON数据
+											success: function(mydata3){
+											},
+											});	
 										document.getElementById("nextseg").disabled=true;
 										document.getElementById("sid").disabled=true;
 									}

@@ -451,6 +451,10 @@ def startcourse(request):#教师点击开始按钮
                 add = Inclass(courseid_id = courseid, command = "start0", isvalue = 1, segment = int(seg)
                               )
                 add.save()
+            else:
+                Inclass.objects.filter(courseid_id = courseid).update(
+                                                                      command = "start",\
+                                                                      )
     return JsonResponse({"yy":1})
 
 def nextsegment(request):#教师点击下一环节
