@@ -23,3 +23,9 @@ class Stumess(models.Model):
     courseid = models.ForeignKey(Course_t)
     stuname = models.CharField(max_length=100)
     question = models.TextField()
+    
+class Talk(models.Model):
+    courseid = models.ForeignKey(Course_t)
+    name = models.CharField(max_length=100)
+    message = models.TextField()
+    time = models.DateTimeField(default = "2017-01-01 00:00:00")

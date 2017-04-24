@@ -17,7 +17,7 @@ from django.contrib import admin
 from commonapp.views import menu,logout, forgot
 from teacherapp.views import login_t,reg_t, coursemanage, addcourse, editcourse, editcourse_ajax, teachermain,\
 ajax_course, addsegment, ajax_segment, addfinally, ajax_finally,inclassajax, inclass, startcourse,nextsegment,\
-Fenzu, Randstu, Randgroup, GfromT, Grade_t, CommandT,StuquestiontoTh, MestoStu
+Fenzu, Randstu, Randgroup, GfromT, Grade_t, CommandT,StuquestiontoTh, MestoStu, Talk_t, Talkajax, Sendmessage_T
 
 
 from studentapp.views import login_s, reg_s, studentmain, Mycourse, Mycourseajax, Addcourse, Coursemessage, Stuinclass,\
@@ -66,5 +66,8 @@ urlpatterns = [
     url(r'^teacher/question/$', StuquestiontoTh),
     url(r'^teacher/messtostu/$', MestoStu),
     url(r'^student/showquestion/$', ThquestiontoStu),
+    url(r'^teacher/talk/$', Talk_t),
+    url(r'^teacher/talk/course/$', Talkajax),
+    url(r'^teacher/talk/sendmess/$', Sendmessage_T),
     
 ]

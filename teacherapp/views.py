@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.contrib import auth
-from django.shortcuts import render
 from commonapp.views import logcheck
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from django.template import Context, RequestContext
-from commonapp.models import User_class, Students, Inclass, Stumess
+from django.template import Context
+from commonapp.models import User_class, Students, Inclass, Stumess, Talk
 from django.shortcuts import render_to_response
 from teacherapp.models import Course_t, Segmnet_t, Table_t
 from django.http import JsonResponse
 import random
+import time
 from random import choice
 
 def logcheck_t(request):#检测教师登陆情况
@@ -655,5 +655,39 @@ def MestoStu(request):
             print text
             add=Stumess(courseid_id = courseid, stuname = "teacher", question = text, \
                             )
+            add.save()
+    return JsonResponse({"rr":1})
+
+def Talk_t(request):#教师进入讨论区
+    teacherid = request.user.id
+    mycourse = Course_t.objects.filter(teacher_id = teacherid)
+    return render_to_response("talk.html", {"mycourse":mycourse})
+
+def Talkajax(request):#教师选择好课程后
+    message_id = []
+    message_message = []
+    message_name = []
+    message_time = []
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            all_message = Talk.objects.filter(courseid_id = courseid)
+            for mes in all_message:
+                message_id.append(mes.id)
+                message_message.append(mes.message)
+                message_name.append(mes.name)
+                message_time.append(mes.time)
+            num = len(message_id)
+    cdic = {"id":message_id, "message":message_message, "name":message_name, "time":message_time, "num":num}
+    return JsonResponse(cdic)
+
+def Sendmessage_T(request):#教师在留言板界面留言
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            message = request.POST.get('message')
+            time.localtime(time.time())
+            thedatetime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))#获取当前时间
+            add = Talk(courseid_id = courseid, name = "teacher", message = message, time = thedatetime)
             add.save()
     return JsonResponse({"rr":1})
