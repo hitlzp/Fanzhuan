@@ -11,8 +11,8 @@
 	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 	<style>
 	body{ padding-bottom:50px;}
-	.fixed{ position:fixed; left:10%; bottom:10%; width:80%; height:15%; background-color:#fffff; z-index:9999;resize: none}
-	.button{position: fixed;left: 10%;bottom: 3%;width: 10%;height: 5%;background-color: #9e9eec;}
+	.fixed{ position:fixed; left:10%; bottom:0px; width:80%; height:15%; background-color:transparent; z-index:9999;resize: none;}
+	.button{position: fixed;left: 82%;bottom:15%;width: 8%;height: 5%;background-color: #9e9eec;}
 	</style>
 </head>
 
@@ -21,63 +21,64 @@
 <div style = "float:right"><a href="/logout/">|注销</a></div>
 <div style = "float:right"><a id = "doSubmit()" href="javascript:;" data-toggle="modal" data-target="#templatemo_modal">课程</a></div>
 
-<table width="80%" border="0" align="center" cellpadding="10%" cellspacing="10%">
-  <tr> 
-    <td colspan="3"> 
-      <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr> 
-          <td colspan="2"><img src="/static/img/board_title.gif" width="115" height="30"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr valign="top"> 
-    <td colspan="3"> 
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr> 
-          <td  colspan="6" bgcolor="#CCCCCC"> 
-            <div align="left"></div>
-          </td>
-        </tr>
-        <tr> 
-          <td width="10%" height="21"> 
-            <div align="center"><img src="/static/img/board_title_on.gif" width="16" height="10"></div>
-          </td>
-          <td width="50%" height="21"> 
-            <div align="center"><img src="/static/img/board_title_subject.gif" width="40" height="12"></div>
-          </td>
-          <td width="15%" height="21"> 
-            <div align="center"><img src="/static/img/board_title_name.gif" width="32" height="10"></div>
-          </td>
-          <td width="25%" height="21"> 
-            <div align="center"><img src="/static/img/board_title_date.gif" width="25" height="10"></div>
-          </td>
-        </tr>
-      </table>
-      <table width="100%" border="0" cellspacing="3" cellpadding="0">
-        <tr bgcolor="#000000"> 
-          <td width="10%" height="1"> 
-            <div align="center"></div>
-          </td>
-          <td width="50%" height="1"></td>
-          <td width="15%" height="1"> 
-            <div align="center"></div>
-          </td>
-          <td width="25%" height="1"> 
-            <div align="center"></div>
-          </td>
-        </tr>
-      </table>
-
-	  
-	  
-     <div id = "test"><div>
-	  
-    </td>
-  </tr>
-</table>
+<span id = "teacherorstudent" style="display:none">{{type}}</span>
+<div>
+	<table width="80%" border="0" align="center" cellpadding="10%" cellspacing="10%">
+	  <tr> 
+		<td colspan="3"> 
+		  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr> 
+			  <td colspan="2"><img src="/static/img/board_title.gif" width="115" height="30"></td>
+			</tr>
+		  </table>
+		</td>
+	  </tr>
+	  <tr valign="top"> 
+		<td colspan="3"> 
+		  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr> 
+			  <td  colspan="6" bgcolor="#CCCCCC"> 
+				<div align="left"></div>
+			  </td>
+			</tr>
+			<tr> 
+			  <td width="10%" height="21"> 
+				<div align="center"><img src="/static/img/board_title_on.gif" width="16" height="10"></div>
+			  </td>
+			  <td width="50%" height="21"> 
+				<div align="center"><img src="/static/img/board_title_subject.gif" width="40" height="12"></div>
+			  </td>
+			  <td width="15%" height="21"> 
+				<div align="center"><img src="/static/img/board_title_name.gif" width="32" height="10"></div>
+			  </td>
+			  <td width="25%" height="21"> 
+				<div align="center"><img src="/static/img/board_title_date.gif" width="25" height="10"></div>
+			  </td>
+			</tr>
+		  </table>
+		  <table width="100%" border="0" cellspacing="3" cellpadding="0">
+			<tr bgcolor="#000000"> 
+			  <td width="10%" height="1"> 
+				<div align="center"></div>
+			  </td>
+			  <td width="50%" height="1"></td>
+			  <td width="15%" height="1"> 
+				<div align="center"></div>
+			  </td>
+			  <td width="25%" height="1"> 
+				<div align="center"></div>
+			  </td>
+			</tr>
+		  </table>
+			<div id = "test"></div>
+		</td>
+	  </tr>
+	</table>
+</div>
 <textarea id = "messtostu" class="fixed"></textarea>
 <button type="button"  onclick = "SendMess();" class="button" >发表回复</button>
+
+
 
 
 <div><button type="button" href="javascript:;" id = "choosecourse" data-toggle="modal" data-target="#templatemo_modal" style="display:none"></button></div>

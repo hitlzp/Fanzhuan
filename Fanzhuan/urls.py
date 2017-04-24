@@ -14,14 +14,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from commonapp.views import menu,logout, forgot
+from commonapp.views import menu,logout, forgot, Talkajax
 from teacherapp.views import login_t,reg_t, coursemanage, addcourse, editcourse, editcourse_ajax, teachermain,\
 ajax_course, addsegment, ajax_segment, addfinally, ajax_finally,inclassajax, inclass, startcourse,nextsegment,\
-Fenzu, Randstu, Randgroup, GfromT, Grade_t, CommandT,StuquestiontoTh, MestoStu, Talk_t, Talkajax, Sendmessage_T
+Fenzu, Randstu, Randgroup, GfromT, Grade_t, CommandT,StuquestiontoTh, MestoStu, Talk_t, Sendmessage_T
 
 
 from studentapp.views import login_s, reg_s, studentmain, Mycourse, Mycourseajax, Addcourse, Coursemessage, Stuinclass,\
-Stu_inclass, Command, GradeS, Savegrade, Stuquestion, ThquestiontoStu
+Stu_inclass, Command, GradeS, Savegrade, Stuquestion, ThquestiontoStu, Talk_s, Sendmessage_S
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -67,7 +67,9 @@ urlpatterns = [
     url(r'^teacher/messtostu/$', MestoStu),
     url(r'^student/showquestion/$', ThquestiontoStu),
     url(r'^teacher/talk/$', Talk_t),
+    url(r'^student/talk/$', Talk_s),
     url(r'^teacher/talk/course/$', Talkajax),
     url(r'^teacher/talk/sendmess/$', Sendmessage_T),
+    url(r'^student/talk/sendmess/$', Sendmessage_S),
     
 ]

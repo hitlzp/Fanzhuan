@@ -661,25 +661,7 @@ def MestoStu(request):
 def Talk_t(request):#教师进入讨论区
     teacherid = request.user.id
     mycourse = Course_t.objects.filter(teacher_id = teacherid)
-    return render_to_response("talk.html", {"mycourse":mycourse})
-
-def Talkajax(request):#教师选择好课程后
-    message_id = []
-    message_message = []
-    message_name = []
-    message_time = []
-    if request.POST:
-        if request.is_ajax():
-            courseid = request.POST.get('courseid')#课程id
-            all_message = Talk.objects.filter(courseid_id = courseid)
-            for mes in all_message:
-                message_id.append(mes.id)
-                message_message.append(mes.message)
-                message_name.append(mes.name)
-                message_time.append(mes.time)
-            num = len(message_id)
-    cdic = {"id":message_id, "message":message_message, "name":message_name, "time":message_time, "num":num}
-    return JsonResponse(cdic)
+    return render_to_response("talk.html", {"mycourse":mycourse, "type":1})#type为0代表学生， 1代表教师
 
 def Sendmessage_T(request):#教师在留言板界面留言
     if request.POST:

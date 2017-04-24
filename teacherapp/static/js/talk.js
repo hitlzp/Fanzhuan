@@ -1,6 +1,7 @@
 function doSubmit()//选择课程
 {
 	Showmessage();
+	type= document.getElementById("teacherorstudent").innerText;
 }
 
 function Showmessage()
@@ -44,6 +45,9 @@ function Showmessage()
 	});
 	setTimeout("Showmessage()",1000);
 }
+
+var type = -1;//当前用户类别，0位学生， 1为教师
+
 function SendMess()//发送消息
 {
 	var course = document.getElementsByName("selectcourse");
@@ -58,12 +62,27 @@ function SendMess()//发送消息
 	"message":text,
 	};
 	
-	$.ajax({
+	if(type == 1)
+	{
+		$.ajax({
 		type : "POST", //要插入数据，所以是POST协议 
 		url : "/teacher/talk/sendmess/", //注意结尾的斜线，否则会出现500错误
 		data : post_data, //JSON数据
 		success: function(mydata){
 			document.getElementById('messtostu').value = "";
 		},
-	});
+		});
+	}
+	if(type == 0)
+	{
+		$.ajax({
+		type : "POST", //要插入数据，所以是POST协议 
+		url : "/student/talk/sendmess/", //注意结尾的斜线，否则会出现500错误
+		data : post_data, //JSON数据
+		success: function(mydata){
+			document.getElementById('messtostu').value = "";
+		},
+		});
+	}
+	
 }

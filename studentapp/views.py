@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.template import Context
 from django.shortcuts import render_to_response
 from django.http import JsonResponse
-from commonapp.models import User_class, Students, Inclass, Stumess
+from commonapp.models import User_class, Students, Inclass, Stumess, Talk
 from teacherapp.models import Course_t, Segmnet_t, Table_t
 import time
 from django.db import transaction
@@ -317,3 +317,25 @@ def ThquestiontoStu(request):
                 stuname.append(mes.stuname)
     cdic = {"num":num, "question":question, "stuname":stuname}
     return JsonResponse(cdic)
+
+def Talk_s(request):#学生进入讨论区
+    mycourse = []
+    studentid = request.user.id
+    stucourse = Students.objects.filter(stu_id = studentid)
+    for thecourse in stucourse:
+        mycourse.append(Course_t.objects.filter(id = thecourse.course_id)[0])
+    return render_to_response("talk.html", {"mycourse":mycourse, "type":0})#type为0代表学生， 1代表教师
+
+
+def Sendmessage_S(request):#学生在留言板界面留言
+    if request.POST:
+        if request.is_ajax():
+            courseid = request.POST.get('courseid')#课程id
+            studentid = request.user.id
+            username = User.objects.filter(id = studentid)[0].username
+            message = request.POST.get('message')
+            time.localtime(time.time())
+            thedatetime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))#获取当前时间
+            add = Talk(courseid_id = courseid, name = username, message = message, time = thedatetime)
+            add.save()
+    return JsonResponse({"rr":1})
